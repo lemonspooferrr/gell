@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<title>Lemon Spoof WebRTC</title>
+<script src="https://cdn.jsdelivr.net/npm/sip.js@0.20.0/dist/sip.min.js"></script>
+<style>
+body { font-family: Arial, sans-serif; max-width: 400px; margin: auto; padding: 20px; }
+input, button { width: 100%; padding: 10px; margin: 10px 0; font-size: 16px; }
+#status { margin-top: 20px; font-weight: bold; }
+</style>
+</head>
+<body>
+<h2>Lemon Spoof WebRTC</h2>
+<label>Caller ID (à afficher)</label>
+<input type="text" id="cid" value="{{ cid }}" placeholder="Ex: 0600000000" />
+<label>Numéro à appeler</label>
+<input type="text" id="to" value="{{ to }}" placeholder="Ex: +33600000000" />
+<button onclick="startCall()">📞 Appeler</button>
+<button onclick="hangupCall()">❌ Raccrocher</button>
+<div id="status">Prêt</div>
+
+<script>
+let session;
+const SIP_SERVER = 'wss://sip3.lemoncloud.eu:7443';
+const SIP_USER = 'testuser9988';
+const SIP_PASS = 'SecurePass2025!';
+const SIP_DOMAIN = 'sip3.lemoncloud.eu';
+
+const ua = new SIP.UA({
+  uri: `sip:${SIP_USER}@${SIP_DOMAIN}`,
+  transportOptions: {
+    wsServers: [SIP_SERVER]
+  },
+  authorizationUser: SIP_USER,
+  password: SIP_PASS,
+  displayName: 'LemonSpoof'
+});
+
+function startCall() {
+  const cid = document.getElementById('cid').value.trim();
+  const to = document.getElementById('to').value.trim();
+  if (!cid || !to) {
+    alert('Merci de remplir les deux champs');
+    return;
+  }
+  document.getElementById('status').textContent = 'Appel en cours...';
+  session = ua.invite(to, {
+    extraHeaders: [`From: <sip:${cid}@${SIP_DOMAIN}>`],
+    media: {
+      constraints: { audio: true, video: false }
+    }
+  });
+  session.on('terminated', () => {
+    document.getElementById('status').textContent = 'Appel terminé';
+  });
+  session.on('failed', () => {
+    document.getElementById('status').textContent = 'Échec de l'appel';
+  });
+}
+
+function hangupCall() {
+  if (session) {
+    session.bye();
+    document.getElementById('status').textContent = 'Appel terminé';
+  }
+}
+</script>
+</body>
+</html>
