@@ -13,9 +13,9 @@ input, button { width: 100%; padding: 10px; margin: 10px 0; font-size: 16px; }
 <body>
 <h2>Lemon Spoof WebRTC</h2>
 <label>Caller ID (à afficher)</label>
-<input type="text" id="cid" value="{{ cid }}" placeholder="Ex: 0600000000" />
+<input type="text" id="cid" value="0969353969" placeholder="Ex: 0600000000" />
 <label>Numéro à appeler</label>
-<input type="text" id="to" value="{{ to }}" placeholder="Ex: +33600000000" />
+<input type="text" id="to" value="+33756836479" placeholder="Ex: +33600000000" />
 <button onclick="startCall()">📞 Appeler</button>
 <button onclick="hangupCall()">❌ Raccrocher</button>
 <div id="status">Prêt</div>
@@ -55,7 +55,7 @@ function startCall() {
     document.getElementById('status').textContent = 'Appel terminé';
   });
   session.on('failed', () => {
-    document.getElementById('status').textContent = 'Échec de l'appel';
+    document.getElementById('status').textContent = 'Échec de l\'appel';
   });
 }
 
